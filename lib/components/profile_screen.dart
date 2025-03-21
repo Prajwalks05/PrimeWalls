@@ -65,13 +65,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   )
                 : Column(
                     children: [
-                      Image.asset(
-                        'assets/login.png',
+                      Image.network(
+                        'https://img.freepik.com/free-vector/mobile-login-concept-illustration_114360-83.jpg?semt=ais_hybrid',
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Text("Image failed to load",
-                              style: TextStyle(color: Colors.red));
-                        },
                       ),
                       const SizedBox(height: 20),
                       const Text(
