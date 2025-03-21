@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../components/appbar.dart';
 import '../components/bottomnav.dart';
-// import '../components/image_card.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:simpleapp/components/image_card.dart';
-
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> imageUrls = [];
   bool isLoading = true;
 
-  final String apiKey = "49236293-9a6d81c6b4d21211d2161e7de";
+  final String apiKey =
+      "gIjCs72ZsEXx9avRNLmLwL4RQ9t81Dcvhpc0wxdY8gBITv0aa7CLZuBt"; // Pexels API Key
 
   @override
   void initState() {
@@ -30,14 +29,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchImages() async {
     final String url =
-        'https://pixabay.com/api/?key=$apiKey&q=wallpaper&image_type=photo&orientation=vertical&per_page=50';
+        'https://api.pexels.com/v1/search?query=wallpaper&per_page=50&orientation=portrait';
+
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': apiKey
+        }, // ✅ Pexels requires API key in headers
+      );
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          imageUrls = List<String>.from(
-              data['hits'].map((img) => img['webformatURL']).toList());
+          imageUrls = List<String>.from(data['photos']
+              .map((img) => img['src']['large'])
+              .toList()); // ✅ Pexels uses `photos` & `src['large']`
           isLoading = false;
         });
       } else {
@@ -45,6 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       print('Error fetching images: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

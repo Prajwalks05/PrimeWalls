@@ -7,7 +7,8 @@ import 'package:simpleapp/utils/theme_manager.dart';
 class ImageCard extends StatelessWidget {
   final String imageUrl;
 
-  const ImageCard({super.key, required this.imageUrl, required Null Function() onTap});
+  const ImageCard(
+      {super.key, required this.imageUrl, required Null Function() onTap});
 
   @override
   Widget build(BuildContext context) {

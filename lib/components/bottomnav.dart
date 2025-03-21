@@ -4,6 +4,7 @@ import 'package:simpleapp/screen/search.dart';
 // import 'package:simpleapp/main.dart';
 import 'package:simpleapp/screen/homescreen.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:simpleapp/components/profile_screen.dart';
 
 class BottomNavBarFb2 extends StatefulWidget {
   final int currentIndex;
