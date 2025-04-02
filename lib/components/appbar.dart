@@ -13,7 +13,7 @@ class GradientAppBarFb1 extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.title,
     this.showBackButton = true,
-  })  : preferredSize = const Size.fromHeight(56.0);
+  }) : preferredSize = const Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +23,12 @@ class GradientAppBarFb1 extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         title,
-        style: TextStyle(color: isDark ? Colors.white : Colors.black),
+        style: TextStyle(color: isDark ? Colors.white : Colors.white),
       ),
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: isDark
-                ? [Colors.black, Colors.grey[900]!]
-                : [Color(0xFF6D28D9), Color(0xFF4338CA)], // Purple gradient
+            colors: themeProvider.gradientColors,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),

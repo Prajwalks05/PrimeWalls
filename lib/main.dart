@@ -3,13 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:simpleapp/utils/theme_manager.dart';
 import 'package:simpleapp/screen/splashscreen.dart';
 import 'package:simpleapp/utils/search_provider.dart';
+import 'scripts/firebaseinit.dart';
 
 void main() {
   runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => ThemeProvider()),
-      ChangeNotifierProvider(create: (_) => SearchProvider()),
-    ], child: const MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => SearchProvider()),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
@@ -18,17 +22,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: themeProvider.themeData,
-            home: const SplashScreen(),
-          );
-        },
-      ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: themeProvider.themeData, // ✅ Theme applied globally
+          home: const SplashScreen(),
+        );
+      },
     );
   }
 }

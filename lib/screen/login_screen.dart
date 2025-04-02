@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simpleapp/components/profile_screen.dart';
+import 'package:simpleapp/utils/theme_manager.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // 🔹 Google Login Function (Placeholder)
   Future<void> _googleLogin() async {
-    // TODO: Implement Google login functionality here
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Google Login Clicked")),
     );
@@ -50,9 +51,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
+        actions: [
+          IconButton(
+            icon: Icon(
+                themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+          ),
+        ],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -120,7 +132,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: themeProvider.isDarkMode
+                                ? Colors.grey[700]
+                                : Colors.blueAccent,
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
@@ -155,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // ✅ Google Login Button
                     GestureDetector(
-                      onTap: _googleLogin, // Calls Google login function
+                      onTap: _googleLogin,
                       child: Container(
                         width: 250,
                         height: 50,
@@ -166,13 +180,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(
-                              'assets/google.png',
-                              width: 30,
-                              height: 30,
-                              fit: BoxFit.contain,
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Image.asset(
+                                'assets/google.png',
+                                width: 30,
+                                height: 30,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            const Text(
+                              "Sign in with Google",
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
                             ),
                           ],
                         ),
