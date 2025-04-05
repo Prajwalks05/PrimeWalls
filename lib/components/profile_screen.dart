@@ -38,11 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await prefs.remove('profilePhoto');
 
     if (mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfileScreen()),
-        (route) => false,
-      );
+      Navigator.pop(context); // Pop the ProfileScreen from the stack
     }
   }
 
@@ -54,6 +50,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(
+                context); // This will pop the current screen and navigate back to the previous screen
+          },
+        ),
         actions: [
           IconButton(
             icon: Icon(isDarkMode ? Icons.dark_mode : Icons.light_mode),
@@ -91,11 +94,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           )
                         : Column(
                             children: [
-                              Image.network(
-                                'https://img.freepik.com/free-vector/mobile-login-concept-illustration_114360-83.jpg?semt=ais_hybrid',
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
                               const SizedBox(height: 20),
                               const Text(
                                 "You are not logged in",
@@ -195,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         runSpacing: 12,
                         children: [
                           _buildThemeColorOption(
-                              context, "Zinc", themeProvider),
+                              context, "Amber", themeProvider),
                           _buildThemeColorOption(
                               context, "Slate", themeProvider),
                           _buildThemeColorOption(
