@@ -3,9 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:simpleapp/utils/theme_manager.dart';
 import 'package:simpleapp/screen/splashscreen.dart';
 import 'package:simpleapp/utils/search_provider.dart';
-import 'scripts/firebaseinit.dart';
+import 'scripts/firebaseinit.dart'; // ✅ Firebase initializer
 
-void main() {
+void main() async {
+  // ✅ Required for using async Firebase initialization
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // ✅ Initialize Firebase before running the app
+  await FirebaseInit.initialize();
+
   runApp(
     MultiProvider(
       providers: [
@@ -27,7 +33,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: themeProvider.themeData, // ✅ Theme applied globally
-          home: const SplashScreen(),
+          home: const SplashScreen(), // ✅ SplashScreen remains your home
         );
       },
     );

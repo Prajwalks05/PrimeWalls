@@ -13,12 +13,12 @@ class ImageDetailScreen extends StatefulWidget {
 }
 
 class _ImageDetailScreenState extends State<ImageDetailScreen> {
-  bool isFavorite = false; // Track favorite state
+  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    bool isDarkMode = themeProvider.isDarkMode;
+    final isDarkMode = themeProvider.isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -28,54 +28,43 @@ class _ImageDetailScreenState extends State<ImageDetailScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              // TODO: Implement wallpaper setting functionality
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor:
-                      isDarkMode ? Colors.white : Colors.black, // Invert colors
+                      isDarkMode ? Colors.white : Colors.black,
                   content: Text(
                     "Set as wallpaper clicked",
                     style: TextStyle(
-                        color: isDarkMode
-                            ? Colors.black
-                            : Colors.white), // Invert text color
+                      color: isDarkMode ? Colors.black : Colors.white,
+                    ),
                   ),
                 ),
               );
             },
             child: Text(
               "Set Wallpaper",
-              style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+              style: TextStyle(
+                  color: isDarkMode ? Colors.white : Colors.black),
             ),
           ),
         ],
       ),
-      backgroundColor:
-          isDarkMode ? Colors.black : Colors.white, // Theme-based background
-      body: Center(
-        child: CachedNetworkImage(
-          imageUrl: widget.imageUrl,
-          placeholder: (context, url) =>
-              const Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) =>
-              const Icon(Icons.error, size: 100),
-          imageBuilder: (context, imageProvider) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return Container(
-                  width: constraints.maxWidth, // Full width of the screen
-                  height: constraints.maxHeight, // Full height of the screen
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.contain, // Maintains aspect ratio
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
+      body: Column(
+        children: [
+          // 🖼️ Full-size image within body
+          Expanded(
+            child: CachedNetworkImage(
+              imageUrl: widget.imageUrl,
+              fit: BoxFit.cover, // Fills the body but not behind AppBar
+              width: double.infinity,
+              placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) =>
+                  const Icon(Icons.error, size: 100),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: isFavorite
@@ -83,13 +72,29 @@ class _ImageDetailScreenState extends State<ImageDetailScreen> {
             : (isDarkMode ? Colors.grey[800] : Colors.grey[300]),
         onPressed: () {
           setState(() {
-            isFavorite = !isFavorite; // Toggle favorite state
+            isFavorite = !isFavorite;
           });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: isDarkMode ? Colors.white : Colors.black,
+              content: Text(
+                isFavorite
+                    ? "Added to favorites"
+                    : "Removed from favorites",
+                style: TextStyle(
+                  color: isDarkMode ? Colors.black : Colors.white,
+                ),
+              ),
+            ),
+          );
         },
-        child: Icon(Icons.favorite,
-            color: isFavorite
-                ? Colors.white
-                : (isDarkMode ? Colors.white : Colors.black)),
+        child: Icon(
+          Icons.favorite,
+          color: isFavorite
+              ? Colors.white
+              : (isDarkMode ? Colors.white : Colors.black),
+        ),
       ),
     );
   }

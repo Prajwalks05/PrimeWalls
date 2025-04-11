@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simpleapp/components/profile_screen.dart';
+import 'package:simpleapp/scripts/auth_provider.dart';
 import 'package:simpleapp/utils/theme_manager.dart';
 import 'signup_screen.dart';
 
@@ -18,35 +19,26 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
 
   Future<void> _login() async {
-    final email = emailController.text;
-    final password = passwordController.text;
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
 
-    if (email == "admin@gmail.com" && password == "admin@123") {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
 
-      if (!prefs.containsKey('profilePhoto')) {
-        await prefs.setString('profilePhoto', '');
-      }
-
-      // ✅ Navigate to ProfileScreen after successful login
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfileScreen()),
-        (route) => false,
-      );
-    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid Credentials")),
+        const SnackBar(content: Text("Login successful")),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login failed: $e")),
       );
     }
-  }
-
-  // 🔹 Google Login Function (Placeholder)
-  Future<void> _googleLogin() async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Google Login Clicked")),
-    );
   }
 
   @override
@@ -68,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // ✅ Redirects back to Profile
+            Navigator.pop(context);
           },
         ),
       ),
@@ -90,8 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
-
-                    // Email Field
                     TextField(
                       controller: emailController,
                       decoration: InputDecoration(
@@ -102,8 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 15),
-
-                    // Password Field
                     TextField(
                       controller: passwordController,
                       obscureText: !_isPasswordVisible,
@@ -125,29 +113,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Login Button
                     SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _login,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: themeProvider.isDarkMode
-                                ? Colors.grey[700]
-                                : Colors.blueAccent,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          child: const Text(
-                            "Login",
-                            style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        )),
-
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _login,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: themeProvider.isDarkMode
+                              ? Colors.grey[700]
+                              : Colors.blueAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 15),
-
-                    // ✅ Hyperlink to Signup Page
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -164,12 +148,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
-                    // ✅ Google Login Button
                     GestureDetector(
-                      onTap: _googleLogin,
+                      onTap: () async {
+                        final user = await signInWithGoogle(context);
+                        if (user != null) {
+                          print(
+                              "Google Sign-In successful: ${user.user?.email}");
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const ProfileScreen()),
+                          );
+                        }
+                      },
                       child: Container(
                         width: 250,
                         height: 50,
@@ -199,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),

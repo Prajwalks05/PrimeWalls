@@ -1,0 +1,2 @@
+D:/PrimeWalls/android/app/.cxx/RelWithDebInfo/2j6u6c6t/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/PrimeWalls/android/app/.cxx/RelWithDebInfo/2j6u6c6t/armeabi-v7a/CMakeFiles/rebuild_cache.dir
