@@ -8,7 +8,7 @@ class ThemeProvider extends ChangeNotifier {
 
   // Theme color maps
   final Map<String, Color> primaryColors = {
-    "Amber": const Color.fromARGB(255, 221, 254, 56),
+    "Amber": const Color.fromARGB(255, 193, 222, 51),
     "Slate": const Color(0xFF334155),
     "Stone": const Color(0xFF57534E),
     "Gray": const Color(0xFF4B5563),

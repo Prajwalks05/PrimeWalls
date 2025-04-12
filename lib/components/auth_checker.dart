@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:simpleapp/components/profile_screen.dart';
 import '../screen/login_screen.dart';
-import 'profile_screen.dart';
 
 class AuthChecker extends StatefulWidget {
   const AuthChecker({super.key});
 
   @override
-  _AuthCheckerState createState() => _AuthCheckerState();
+  State<AuthChecker> createState() => _AuthCheckerState();
 }
 
 class _AuthCheckerState extends State<AuthChecker> {
@@ -21,8 +22,10 @@ class _AuthCheckerState extends State<AuthChecker> {
 
   Future<void> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+
     setState(() {
-      isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+      isLoggedIn = prefs.getBool('isLoggedIn') == true || firebaseUser != null;
     });
   }
 

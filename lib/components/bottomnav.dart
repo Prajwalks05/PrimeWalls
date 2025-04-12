@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:simpleapp/screen/favourite_screen.dart';
 import 'package:simpleapp/screen/profile.dart';
 import 'package:simpleapp/screen/search.dart';
 import 'package:simpleapp/screen/homescreen.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:simpleapp/utils/theme_manager.dart';
+import 'package:simpleapp/screen/favourite_screen.dart';
 
 class BottomNavBarFb2 extends StatefulWidget {
   final int currentIndex;
@@ -91,7 +93,7 @@ class _BottomNavBarFb2State extends State<BottomNavBarFb2> {
                     selectedColor: selectedColor,
                     unselectedColor: unselectedColor,
                     onPressed: () {
-                      _navigateToScreen(context, 2, const SearchScreen());
+                      _navigateToScreen(context, 2, const FavouriteScreen());
                     },
                   ),
                   IconBottomBar(

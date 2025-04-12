@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simpleapp/utils/theme_manager.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeData _themeData = ThemeData.light();

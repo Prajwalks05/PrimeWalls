@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.PrimeWalls"
+    namespace = "com.example.simpleapp"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
