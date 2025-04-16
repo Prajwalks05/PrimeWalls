@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:simpleapp/screen/image_detail.dart';
-// import 'package:simpleapp/screens/image_detail.dart';
+import 'package:simpleapp/screen/image_detail.dart'; // Ensure this import is correct
 import 'package:simpleapp/utils/theme_manager.dart';
 
 class ImageCard extends StatelessWidget {
   final String imageUrl;
+  final VoidCallback onTap;
 
-  const ImageCard(
-      {super.key, required this.imageUrl, required Null Function() onTap});
+  const ImageCard({
+    Key? key,
+    required this.imageUrl,
+    required this.onTap,
+    required String imageId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ImageDetailScreen(imageUrl: imageUrl),
-          ),
-        );
-      },
+      onTap: onTap,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: CachedNetworkImage(
           imageUrl: imageUrl,
           fit: BoxFit.cover,
+          filterQuality: FilterQuality.high, // 💎 High quality image rendering
           placeholder: (context, url) => Container(
             height: 250,
             color: Colors.grey[300],

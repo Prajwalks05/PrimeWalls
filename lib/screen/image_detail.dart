@@ -19,7 +19,6 @@ class _ImageDetailScreenState extends State<ImageDetailScreen> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = themeProvider.isDarkMode;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Image Preview"),

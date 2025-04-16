@@ -8,7 +8,9 @@ import 'package:simpleapp/components/image_card.dart';
 import 'package:simpleapp/screen/image_detail.dart';
 import 'package:simpleapp/utils/theme_manager.dart';
 import 'package:simpleapp/utils/search_provider.dart';
+import 'package:simpleapp/components/search_input.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:simpleapp/scripts/response.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -19,12 +21,12 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController textController = TextEditingController();
-  final ScrollController _scrollController =
-      ScrollController(); // ✅ Defined scroll controller
+  final ScrollController _scrollController = ScrollController();
   final String apiKey =
-      "gIjCs72ZsEXx9avRNLmLwL4RQ9t81Dcvhpc0wxdY8gBITv0aa7CLZuBt"; // Replace with your API key
+      "gIjCs72ZsEXx9avRNLmLwL4RQ9t81Dcvhpc0wxdY8gBITv0aa7CLZuBt";
 
-  // 🔹 Fetch images and store them in Provider
+  List<dynamic> fullResponsePhotos = [];
+
   Future<void> _searchImages(String query) async {
     if (query.isEmpty) return;
 
@@ -37,18 +39,32 @@ class _SearchScreenState extends State<SearchScreen> {
     try {
       final response = await http.get(
         Uri.parse(url),
-        headers: {
-          'Authorization': apiKey
-        }, // ✅ Pexels requires API key in headers
+        headers: {'Authorization': apiKey},
       );
+
+      print("API Response: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        searchProvider.setSearchResults(
-          List<String>.from(data['photos']
-              .map((img) => img['src']['large'])
-              .toList()), // ✅ Fixed key
-        );
+        print("Decoded Data: $data");
+
+        if (data['photos'] != null) {
+          List<Map<String, String>> results = [];
+          fullResponsePhotos = data['photos']; // 🔹 Store full photo objects
+
+          for (var img in fullResponsePhotos) {
+            results.add({
+              'id': img['id'].toString(),
+              'url': img['src']['portrait'],
+            });
+          }
+          searchProvider.setSearchResults(results);
+
+          // Optionally save full response
+          await writeResponseToFile(response.body);
+        } else {
+          print('No photos found in the response');
+        }
       } else {
         throw Exception('Failed to load images');
       }
@@ -71,15 +87,12 @@ class _SearchScreenState extends State<SearchScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            // 🔹 Search Bar
             SearchInput(
               textController: textController,
               hintText: 'Search wallpapers...',
               onSubmitted: (value) => _searchImages(value),
             ),
             const SizedBox(height: 10),
-
-            // 🔹 Show Loading Indicator
             if (searchProvider.isLoading)
               const Expanded(
                 child: Center(child: CircularProgressIndicator()),
@@ -96,7 +109,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     controller: _scrollController,
                     child: Column(
                       children: [
-                        // 🔹 Show Staggered Grid with Images
                         if (searchProvider.imageUrls.isNotEmpty)
                           StaggeredGrid.count(
                             crossAxisCount: 2,
@@ -108,8 +120,18 @@ class _SearchScreenState extends State<SearchScreen> {
                                 height: 450,
                                 child: ImageCard(
                                   imageUrl: searchProvider.imageUrls[index],
-                                  onTap: () {
-                                    // 🔹 Navigate to ImageDetailScreen
+                                  imageId: searchProvider.imageIds[index],
+                                  onTap: () async {
+                                    // 🔹 Get the full image object from the stored list
+                                    var fullImageData =
+                                        fullResponsePhotos[index];
+                                    // 🔹 Print to console
+                                    print(
+                                        "Clicked Image Full Data: $fullImageData");
+                                    // 🔹 Write full image object to response.json
+                                    await writeSingleImageToFile(fullImageData);
+
+                                    // 🔹 Navigate to detail screen
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -124,8 +146,6 @@ class _SearchScreenState extends State<SearchScreen> {
                               );
                             }),
                           )
-
-                        // 🔹 Show Empty Message if No Results
                         else
                           const Center(
                             child: Padding(
@@ -146,56 +166,6 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       bottomNavigationBar: const BottomNavBarFb2(currentIndex: 1),
-    );
-  }
-}
-
-// 🔹 Search Input Field
-class SearchInput extends StatelessWidget {
-  final TextEditingController textController;
-  final String hintText;
-  final Function(String) onSubmitted;
-
-  const SearchInput({
-    required this.textController,
-    required this.hintText,
-    required this.onSubmitted,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    bool isDarkMode = themeProvider.isDarkMode;
-
-    return TextField(
-      controller: textController,
-      onSubmitted: onSubmitted, // 🔍 Triggers search when user presses enter
-      style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.search_sharp,
-            color: isDarkMode ? Colors.white : Color(0xff4338CA)),
-        filled: true,
-        fillColor: isDarkMode ? Colors.grey[800] : Colors.white,
-        hintText: hintText,
-        hintStyle:
-            TextStyle(color: isDarkMode ? Colors.grey[400] : Colors.grey),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-              color: isDarkMode ? Colors.grey[600]! : Colors.white, width: 1.0),
-          borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-              color: isDarkMode ? Colors.grey[500]! : Colors.white, width: 2.0),
-          borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-        ),
-      ),
     );
   }
 }

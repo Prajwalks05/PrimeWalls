@@ -8,7 +8,6 @@ import 'scripts/firebaseinit.dart'; // ✅ Firebase initializer
 void main() async {
   // ✅ Required for using async Firebase initialization
   WidgetsFlutterBinding.ensureInitialized();
-
   // ✅ Initialize Firebase before running the app
   await FirebaseInit.initialize();
 
