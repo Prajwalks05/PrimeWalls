@@ -1,4 +1,3 @@
-// File: scripts/response.dart
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -27,9 +26,17 @@ Future<void> writeSingleImageToFile(Map<String, dynamic> imageData) async {
     if (!await primewallsDirectory.exists()) {
       await primewallsDirectory.create(recursive: true);
     }
+
+    // Check and clean up the portrait URL to ensure it's not compressed
+    String portraitUrl = imageData['src']['portrait'];
+    final rawUrl =portraitUrl.split('?')[0]; // Strip off any compression parameters
+
+    // Update the image data with the clean URL
+    imageData['src']['portrait'] = rawUrl;
+
     final jsonFile = File('${primewallsDirectory.path}/response.json');
     await jsonFile.writeAsString(json.encode(imageData), flush: true);
-    print("Single image response written to file");
+    print("Single image response with cleaned URL written to file");
   } catch (e) {
     print("Error writing single image response: $e");
   }

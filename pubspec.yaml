@@ -50,6 +50,7 @@ dependencies:
   firebase_auth: ^5.5.2
   google_sign_in: ^6.3.0
   path_provider: ^2.0.0 # Add or update this line to the latest version
+  async_wallpaper: ^2.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
