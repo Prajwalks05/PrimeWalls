@@ -6,7 +6,8 @@ import 'package:simpleapp/screen/homescreen.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:simpleapp/utils/theme_manager.dart';
-import 'package:simpleapp/screen/favourite_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simpleapp/screen/login_screen.dart';
 
 class BottomNavBarFb2 extends StatefulWidget {
   final int currentIndex;
@@ -26,7 +27,7 @@ class _BottomNavBarFb2State extends State<BottomNavBarFb2> {
   }
 
   void _navigateToScreen(BuildContext context, int index, Widget screen) {
-    if (selectedIndex == index) return; // Prevent duplicate navigation
+    if (selectedIndex == index) return;
 
     setState(() {
       selectedIndex = index;
@@ -40,6 +41,31 @@ class _BottomNavBarFb2State extends State<BottomNavBarFb2> {
         selectedIndex = widget.currentIndex;
       });
     });
+  }
+
+  Future<void> _checkLoginAndNavigate(
+      BuildContext context, int index, Widget screen) async {
+    final prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      _navigateToScreen(context, index, screen);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('You must be logged in to access this page.'),
+          action: SnackBarAction(
+            label: 'Login',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+              );
+            },
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -93,7 +119,8 @@ class _BottomNavBarFb2State extends State<BottomNavBarFb2> {
                     selectedColor: selectedColor,
                     unselectedColor: unselectedColor,
                     onPressed: () {
-                      _navigateToScreen(context, 2, const FavouriteScreen());
+                      _checkLoginAndNavigate(
+                          context, 2, const FavouriteScreen());
                     },
                   ),
                   IconBottomBar(
@@ -144,9 +171,7 @@ class IconBottomBar extends StatelessWidget {
           Icon(
             icon,
             size: 25,
-            color: selected
-                ? selectedColor
-                : unselectedColor, // ✅ Now updates correctly
+            color: selected ? selectedColor : unselectedColor,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6.0),

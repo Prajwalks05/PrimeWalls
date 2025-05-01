@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchImages() async {
     final String url =
-        'https://api.pexels.com/v1/search?query=wallpaper&per_page=50&orientation=portrait';
+        'https://api.pexels.com/v1/search?query=wallpaper&per_page=100&orientation=portrait&safesearch=true';
 
     try {
       final response = await http.get(
