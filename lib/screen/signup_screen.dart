@@ -19,25 +19,48 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
 
   Future<void> _signup() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
     if (_formKey.currentState!.validate()) {
       try {
+        if (password != confirmPassword) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Passwords do not match")),
+          );
+          return;
+        }
+
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
+          email: email,
+          password: password,
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Signup successful! Please login.")),
         );
 
-        // ✅ Redirect to LoginScreen after successful signup
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
+      } on FirebaseAuthException catch (e) {
+        String message = "Signup failed";
+        if (e.code == 'email-already-in-use') {
+          message = "Email is already registered";
+        } else if (e.code == 'invalid-email') {
+          message = "Invalid email format";
+        } else if (e.code == 'weak-password') {
+          message = "Password is too weak";
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Signup Error: ${e.toString()}")),
+          SnackBar(content: Text("Unexpected error: ${e.toString()}")),
         );
       }
     }
@@ -53,16 +76,17 @@ class _SignupScreenState extends State<SignupScreen> {
           key: _formKey,
           child: Card(
             elevation: 5,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text("Create Account",
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 20),
-
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -71,11 +95,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       prefixIcon: Icon(Icons.email),
                       border: OutlineInputBorder(),
                     ),
-                    validator: (value) =>
-                        value!.isEmpty ? "Enter an email" : null,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? "Enter an email"
+                        : null,
                   ),
                   const SizedBox(height: 15),
-
                   TextFormField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
@@ -94,11 +118,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       border: const OutlineInputBorder(),
                     ),
-                    validator: (value) =>
-                        value!.length < 6 ? "Minimum 6 characters" : null,
+                    validator: (value) => value == null || value.length < 6
+                        ? "Minimum 6 characters"
+                        : null,
                   ),
                   const SizedBox(height: 15),
-
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: !_isConfirmPasswordVisible,
@@ -118,12 +142,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       border: const OutlineInputBorder(),
                     ),
-                    validator: (value) => value != _passwordController.text
-                        ? "Passwords do not match"
-                        : null,
+                    validator: (value) =>
+                        value == null || value != _passwordController.text
+                            ? "Passwords do not match"
+                            : null,
                   ),
                   const SizedBox(height: 25),
-
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

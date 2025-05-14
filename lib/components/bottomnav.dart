@@ -119,8 +119,7 @@ class _BottomNavBarFb2State extends State<BottomNavBarFb2> {
                     selectedColor: selectedColor,
                     unselectedColor: unselectedColor,
                     onPressed: () {
-                      _checkLoginAndNavigate(
-                          context, 2, const FavouriteScreen());
+                      _checkLoginAndNavigate(context, 2, FavouritesScreen());
                     },
                   ),
                   IconBottomBar(

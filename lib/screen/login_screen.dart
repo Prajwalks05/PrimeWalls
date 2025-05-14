@@ -24,6 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('isLoggedIn') ?? false) {
+      await prefs.setString('userEmail', emailController.text.trim());
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const ProfileScreen()),
@@ -54,7 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           elevation: 5,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -65,10 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text("Welcome Back!",
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 20),
-
-                    // Email Field
                     TextField(
                       controller: emailController,
                       decoration: InputDecoration(
@@ -79,8 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 15),
-
-                    // Password Field
                     TextField(
                       controller: passwordController,
                       obscureText: !_isPasswordVisible,
@@ -102,8 +102,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Login Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -123,13 +121,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 15),
-
-                    // Signup Hyperlink
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const SignupScreen()),
+                          MaterialPageRoute(
+                              builder: (_) => const SignupScreen()),
                         );
                       },
                       child: const Text(
@@ -142,8 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Google Login
                     GestureDetector(
                       onTap: () async {
                         final user = await signInWithGoogle(context);
@@ -151,6 +146,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           await prefs.setBool('isLoggedIn', true);
+
+                          // ✅ Only set userEmail if it's not null
+                          final email = user.user?.email;
+                          if (email != null && email.isNotEmpty) {
+                            await prefs.setString('userEmail', email);
+                          }
+
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -170,7 +172,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: Image.asset(
                                 'assets/google.png',
                                 width: 30,
@@ -180,7 +183,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const Text(
                               "Sign in with Google",
-                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
                             ),
                           ],
                         ),

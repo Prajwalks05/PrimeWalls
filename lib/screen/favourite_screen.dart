@@ -1,44 +1,75 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:simpleapp/components/appbar.dart'; // Assuming you have a custom app bar
-import 'package:simpleapp/components/bottomnav.dart'; // Correct import here
-import 'package:simpleapp/utils/theme_manager.dart'; // Assuming ThemeManager is in utils
+import 'package:simpleapp/components/appbar.dart';
+import 'package:simpleapp/components/image_card.dart';
+import 'package:simpleapp/scripts/favourite_handler.dart';
+import 'package:simpleapp/screen/image_detail.dart';
+import 'package:simpleapp/components/bottomnav.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
-class FavouriteScreen extends StatefulWidget {
-  const FavouriteScreen({super.key});
+class FavouritesScreen extends StatefulWidget {
+  const FavouritesScreen({super.key});
 
   @override
-  State<FavouriteScreen> createState() => FavouriteScreenState();
+  State<FavouritesScreen> createState() => _FavouritesScreenState();
 }
 
-class FavouriteScreenState extends State<FavouriteScreen> {
+class _FavouritesScreenState extends State<FavouritesScreen> {
+  List<String> favouriteUrls = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavourites();
+  }
+
+  Future<void> _loadFavourites() async {
+    final favs = await FirebaseHandler.getFavourites();
+    setState(() {
+      favouriteUrls = favs;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Get current theme provider
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    bool isDarkMode = themeProvider.isDarkMode;
-
     return Scaffold(
-      // Custom AppBar with theme toggle button
-      appBar: const GradientAppBarFb1(title: 'Flutter Wallpapers'),
-      // Body of the screen
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              const Text(
-                "Your Favourite Wallpapers",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              // Add content for the favourites list here
-              // For example, a list of images or widgets
-            ],
-          ),
-        ),
-      ),
+      appBar: const GradientAppBarFb1(title: 'Primewalls'),
       bottomNavigationBar: const BottomNavBarFb2(currentIndex: 2),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : LiquidPullToRefresh(
+              onRefresh: _loadFavourites,
+              showChildOpacityTransition: false,
+              child: favouriteUrls.isEmpty
+                  ? const Center(child: Text("No favourites yet."))
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.all(10),
+                      child: StaggeredGrid.count(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        children: favouriteUrls.map((imageUrl) {
+                          return SizedBox(
+                              height: 450,
+                              child: ImageCard(
+                                imageUrl: imageUrl,
+                                imageId: '', // Unused in favourites
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          ImageDetailScreen(imageUrl: imageUrl),
+                                    ),
+                                  ).then((_) => _loadFavourites());
+                                },
+                              ));
+                        }).toList(),
+                      ),
+                    ),
+            ),
     );
   }
 }

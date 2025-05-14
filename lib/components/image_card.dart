@@ -10,8 +10,7 @@ class ImageCard extends StatelessWidget {
   const ImageCard({
     Key? key,
     required this.imageUrl,
-    required this.onTap,
-    required String imageId,
+    required this.onTap, required String imageId,
   }) : super(key: key);
 
   @override

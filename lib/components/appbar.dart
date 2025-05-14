@@ -21,9 +21,21 @@ class GradientAppBarFb1 extends StatelessWidget implements PreferredSizeWidget {
     bool isDark = themeProvider.isDarkMode;
 
     return AppBar(
-      title: Text(
-        title,
-        style: TextStyle(color: isDark ? Colors.white : Colors.white),
+      title: Row(
+        children: [
+          Flexible(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0), // adjust as needed
+              child: Image.asset('logo.png',
+                  width: 65, height: 65, fit: BoxFit.cover),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            title,
+            style: TextStyle(color: isDark ? Colors.white : Colors.white),
+          ),
+        ],
       ),
       flexibleSpace: Container(
         decoration: BoxDecoration(

@@ -8,6 +8,7 @@ import 'package:simpleapp/components/bottomnav.dart';
 import 'package:simpleapp/components/image_card.dart';
 import 'package:simpleapp/screen/image_detail.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 Future<void> _writeResponseToFile(Map<String, dynamic> data) async {
   try {
@@ -38,7 +39,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
   List<Map<String, String>> imageData = [];
-  List<dynamic> fullPhotoData = []; // 🔹 Store full API photo objects
+  List<dynamic> fullPhotoData = [];
   bool isLoading = true;
 
   final String apiKey =
@@ -65,8 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (data['photos'] is List) {
           List<Map<String, String>> results = [];
-
-          fullPhotoData = data['photos']; // 🔹 Save the full photo JSONs
+          fullPhotoData = data['photos'];
 
           for (var img in data['photos']) {
             results.add({
@@ -100,19 +100,20 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const GradientAppBarFb1(title: 'Flutter Wallpapers'),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Scrollbar(
-          controller: _scrollController,
-          thumbVisibility: true,
-          thickness: 8,
-          radius: const Radius.circular(0),
-          scrollbarOrientation: ScrollbarOrientation.right,
-          child: isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
+      appBar: const GradientAppBarFb1(title: 'Primewalls'),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : LiquidPullToRefresh(
+              onRefresh: _fetchImages,
+              showChildOpacityTransition: false,
+              child: Scrollbar(
+                controller: _scrollController,
+                thumbVisibility: true,
+                thickness: 8,
+                scrollbarOrientation: ScrollbarOrientation.right,
+                child: SingleChildScrollView(
                   controller: _scrollController,
+                  padding: const EdgeInsets.all(10),
                   child: StaggeredGrid.count(
                     crossAxisCount: 2,
                     mainAxisSpacing: 8,
@@ -124,17 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           imageUrl: imageData[index]['url']!,
                           imageId: imageData[index]['id']!,
                           onTap: () async {
-                            final tappedImageJson =
-                                fullPhotoData[index]; // 🔹 Full JSON object
-
-                            // 🔹 Print full image data for debug
+                            final tappedImageJson = fullPhotoData[index];
                             print(
                                 "Clicked image JSON:\n${jsonEncode(tappedImageJson)}");
-
-                            // 🔹 Save full image data to file
                             await _writeResponseToFile(tappedImageJson);
-
-                            // 🔹 Navigate to detail screen
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -149,8 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
                   ),
                 ),
-        ),
-      ),
+              ),
+            ),
       bottomNavigationBar: const BottomNavBarFb2(currentIndex: 0),
     );
   }

@@ -109,7 +109,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final authChecker = AuthChecker();
 
     return Scaffold(
-      appBar: GradientAppBarFb1(title: 'Search Wallpapers'),
+      appBar: GradientAppBarFb1(title: 'Primewalls'),
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(10.0),
