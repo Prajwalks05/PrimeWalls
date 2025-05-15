@@ -28,20 +28,6 @@ export default function AppShowcase() {
   }
 
   return (
-    <>
-      <Head>
-        <script src="https://cdn.amplitude.com/script/749bf36ed99e26f892388e1361178873.js"></script>
-        <script dangerouslySetInnerHTML={{
-          __html: `
-          window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1}));
-          window.amplitude.init('749bf36ed99e26f892388e1361178873', {
-            fetchRemoteConfig: true,
-            autocapture: true
-          });
-        `
-        }} />
-      </Head>
-    </> >
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
       <header className="sticky top-0 z-10 backdrop-blur-lg bg-white/80 border-b border-gray-100">
