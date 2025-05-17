@@ -13,10 +13,10 @@ export default function AppShowcase() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const appScreenshots = [
-    "https://picsum.photos/200/300?1",
-    "https://picsum.photos/200/300?2",
-    "https://picsum.photos/200/300?3",
-    "https://picsum.photos/200/300?4",
+    "/screenshots/login.jpg?1",
+    "/screenshots/search.jpg?2",
+    "/screenshots/favourite.jpeg?3",
+    "/screenshots/profile.jpg?4",
   ]
 
   const nextImage = () => {
@@ -77,6 +77,7 @@ export default function AppShowcase() {
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href="https://drive.google.com/uc?export=download&id=1HIhyqHv-Jmfz41wdjw1QlQA7X-zHtN7g"
+                download
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -88,6 +89,7 @@ export default function AppShowcase() {
                 </Button>
               </a>
 
+
             </div>
           </div>
           <div className="flex justify-center">
@@ -95,8 +97,8 @@ export default function AppShowcase() {
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl z-10"></div>
               <div className="w-full h-full overflow-hidden rounded-[32px] relative">
                 <Image
-                  src={appScreenshots[currentImageIndex]}
-                  alt={`App screenshot ${currentImageIndex + 1}`}
+                  src="/homescreen.jpg"
+                  alt="App Logo"
                   fill
                   className="object-cover"
                 />
@@ -128,7 +130,7 @@ export default function AppShowcase() {
                     className={`transition-all duration-300 ${index === currentImageIndex ? "scale-100 opacity-100" : "scale-90 opacity-50 hidden md:block"
                       }`}
                   >
-                    <CardContent className="p-2">
+                    <CardContent>
                       <div className="relative w-[200px] h-[400px] overflow-hidden rounded-lg">
                         <Image
                           src={screenshot}
