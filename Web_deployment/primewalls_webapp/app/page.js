@@ -75,7 +75,7 @@ export default function AppShowcase() {
               experience in mind, our app delivers exceptional performance and stunning visuals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="https://drive.google.com/file/d/1HIhyqHv-Jmfz41wdjw1QlQA7X-zHtN7g/view" target="_blank" download>
+              <a href="https://drive.google.com/file/d/1HIhyqHv-Jmfz41wdjw1QlQA7X-zHtN7g/view" target="_blank" rel="noopener noreferrer">
                 <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
                 >Download APK</Button>
               </a>
