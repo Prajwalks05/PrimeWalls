@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "532440882861",
+    "project_id": "primewalls-8b7ab",
+    "storage_bucket": "primewalls-8b7ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:532440882861:android:5558c15909af5067f67024",
+        "android_client_info": {
+          "package_name": "com.example.simpleapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "532440882861-q32mhcv6cmamn0v1f5aad4bng1pi3v4k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.simpleapp",
+            "certificate_hash": "dc5f0882dcec22c29e8a48efad1b954788b8e201"
+          }
+        },
+        {
+          "client_id": "532440882861-3nu1ddab11gc9rkut1ajkbkg2hiqe8d9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYJXvlhaA7gh3cix6p7sl7ZDD6u4W-lVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "532440882861-3nu1ddab11gc9rkut1ajkbkg2hiqe8d9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "532440882861-59m35vu363namdreuccfc3snh142ce3q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.simpleapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
