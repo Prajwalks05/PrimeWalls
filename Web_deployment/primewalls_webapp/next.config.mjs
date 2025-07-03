@@ -6,6 +6,7 @@ const nextConfig = {
     icons: {
         icon: "/favicon.ico", // path in /public
     },
+    devIndicators: false,
 };
 
 export default nextConfig;
