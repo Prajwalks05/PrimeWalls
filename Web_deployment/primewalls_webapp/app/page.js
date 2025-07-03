@@ -22,7 +22,7 @@ export default function AppShowcase() {
   const landscapeScreenshots = [
     "/screenshots/landscape/login.jpg?1",
     "/screenshots/landscape/search.jpg?2",
-    "/screenshots/landscape/favourite.jpeg?3",
+    "/screenshots/landscape/favourite.jpg?3",
     "/screenshots/landscape/profile.jpg?4"];
 
   return (
