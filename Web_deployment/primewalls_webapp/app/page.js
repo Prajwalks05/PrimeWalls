@@ -16,14 +16,16 @@ export default function AppShowcase() {
     "/screenshots/portrait/login.jpg?1",
     "/screenshots/portrait/search.jpg?2",
     "/screenshots/portrait/favourite.jpeg?3",
-    "/screenshots/portrait/profile.jpg?4"
+    "/screenshots/portrait/home.jpg?4",
+    "/screenshots/portrait/profile.jpg?5"
   ];
 
   const landscapeScreenshots = [
     "/screenshots/landscape/login.jpg?1",
     "/screenshots/landscape/search.jpg?2",
     "/screenshots/landscape/favourite.jpg?3",
-    "/screenshots/landscape/profile.jpg?4"];
+    "/screenshots/landscape/home.jpg?4",
+    "/screenshots/landscape/profile.jpg?5"];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
